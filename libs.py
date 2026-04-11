@@ -1,7 +1,20 @@
 # libs
 
 import numpy as np
-from mpi4py import MPI
+# MPI replaced with stub for single-process / multiprocessing mode
+class _MPIStub:
+    COMM_WORLD = type('Comm', (), {
+        'Get_rank': lambda self: 0,
+        'Get_size': lambda self: 1,
+        'bcast': lambda self, data, root=0: data,
+        'allreduce': lambda self, val, op=None: val,
+        'Scatterv': lambda self, *a, **kw: None,
+    })()
+    SUM = None
+    DOUBLE = None
+    @staticmethod
+    def Get_library_version(): return "stub"
+MPI = _MPIStub()
 import psutil
 import h5py
 from scipy.interpolate import RegularGridInterpolator

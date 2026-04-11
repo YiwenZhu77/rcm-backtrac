@@ -23,8 +23,9 @@ def compute_adaptive_steps(I, J, j_max, j_period, interp_COLAT, interp_ALOCT_sin
     target_fraction = 0.001 # Target step size as a smaller fraction of the characteristic length scale
 
     # Compute dtheta/dI (first pass)
-    colat_minus = interp_COLAT([J, I - initial_delta])[0] * libs.np.pi / 180.0
-    colat_plus = interp_COLAT([J, I + initial_delta])[0] * libs.np.pi / 180.0
+    _colat_scale = 1.0 if getattr(params, 'colat_in_radians', False) else libs.np.pi / 180.0
+    colat_minus = interp_COLAT([J, I - initial_delta])[0] * _colat_scale
+    colat_plus = interp_COLAT([J, I + initial_delta])[0] * _colat_scale
     dtheta_dI = (colat_plus - colat_minus) / (2 * initial_delta)
 
     # Compute dphi/dJ with wrapping (first pass)
@@ -71,8 +72,8 @@ def compute_adaptive_steps(I, J, j_max, j_period, interp_COLAT, interp_ALOCT_sin
     delta_J = max(min_delta, min(delta_J, max_delta))
 
     # Recompute dtheta/dI and dphi/dJ with adaptive step sizes
-    colat_minus = interp_COLAT([J, I - delta_I])[0] * libs.np.pi / 180.0
-    colat_plus = interp_COLAT([J, I + delta_I])[0] * libs.np.pi / 180.0
+    colat_minus = interp_COLAT([J, I - delta_I])[0] * _colat_scale
+    colat_plus = interp_COLAT([J, I + delta_I])[0] * _colat_scale
     dtheta_dI = (colat_plus - colat_minus) / (2 * delta_I)
 
     J_minus = J - delta_J
@@ -173,7 +174,8 @@ def update_position_new(
         colat_deg = interp_COLAT([current_J, current_I])[0]
         if libs.np.isnan(colat_deg):
             return None, None
-        theta = colat_deg * libs.np.pi / 180.0
+        _cs = 1.0 if getattr(params, 'colat_in_radians', False) else libs.np.pi / 180.0
+        theta = colat_deg * _cs
 
         # local geometry
         dI1, dJ1, dth1, dph1 = compute_adaptive_steps(
@@ -197,7 +199,7 @@ def update_position_new(
             colat2 = interp_COLAT([J2, I2])[0]
             if libs.np.isnan(colat2):
                 return None, None
-            th2 = colat2 * libs.np.pi / 180.0
+            th2 = colat2 * _cs
             dI2, dJ2, dth2, dph2 = compute_adaptive_steps(I2, J2, j_max, j_period, interp_COLAT, interp_ALOCT_sin, interp_ALOCT_cos)
             dVeI2, dVeJ2 = compute_dVeff_derivatives(I2, J2, dI2, dJ2, j_max, j_period, interp_V, interp_VM, species, lambda_val)
             k2_I, k2_J = compute_dI_dt_dJ_dt(dVeI2, dVeJ2, th2, dth2, dph2)
@@ -210,7 +212,7 @@ def update_position_new(
             colat3 = interp_COLAT([J3, I3])[0]
             if libs.np.isnan(colat3):
                 return None, None
-            th3 = colat3 * libs.np.pi / 180.0
+            th3 = colat3 * _cs
             dI3, dJ3, dth3, dph3 = compute_adaptive_steps(I3, J3, j_max, j_period, interp_COLAT, interp_ALOCT_sin, interp_ALOCT_cos)
             dVeI3, dVeJ3 = compute_dVeff_derivatives(I3, J3, dI3, dJ3, j_max, j_period, interp_V, interp_VM, species, lambda_val)
             k3_I, k3_J = compute_dI_dt_dJ_dt(dVeI3, dVeJ3, th3, dth3, dph3)
@@ -223,7 +225,7 @@ def update_position_new(
             colat4 = interp_COLAT([J4, I4])[0]
             if libs.np.isnan(colat4):
                 return None, None
-            th4 = colat4 * libs.np.pi / 180.0
+            th4 = colat4 * _cs
             dI4, dJ4, dth4, dph4 = compute_adaptive_steps(I4, J4, j_max, j_period, interp_COLAT, interp_ALOCT_sin, interp_ALOCT_cos)
             dVeI4, dVeJ4 = compute_dVeff_derivatives(I4, J4, dI4, dJ4, j_max, j_period, interp_V, interp_VM, species, lambda_val)
             k4_I, k4_J = compute_dI_dt_dJ_dt(dVeI4, dVeJ4, th4, dth4, dph4)
