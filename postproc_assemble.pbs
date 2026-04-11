@@ -1,0 +1,33 @@
+#!/bin/bash
+#PBS -N AssembleHDF5
+#PBS -A URIC0014
+#PBS -j oe
+#PBS -k eod
+#PBS -q casper
+#PBS -l walltime=24:00:00
+#PBS -l select=1:ncpus=1
+
+### This script runs the memory-efficient, parallel HDF5 assembly process.
+### It assumes the main simulation has already finished and produced the
+### temporary .npy files for each rank.
+
+# --- Setup Conda Environment ---
+source /glade/u/apps/opt/conda/etc/profile.d/conda.sh
+conda activate npl
+
+# --- Go to the working directory ---
+cd "$PBS_O_WORKDIR"
+
+# --- Define the number of ranks from the original simulation ---
+# This must match the number of .tmp.npy files that were generated.
+N_RANKS_FROM_SIM=1
+
+echo "Starting HDF5 assembly job..."
+echo "Reading file paths and settings from params.py..."
+echo "Processing data from $N_RANKS_FROM_SIM ranks..."
+
+# --- Run the optimized, parallel assembly script ---
+# We now pass the number of ranks as a command-line argument.
+python assemble_streaming.py $N_RANKS_FROM_SIM
+
+echo "Assembly job finished."

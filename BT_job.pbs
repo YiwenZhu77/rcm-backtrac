@@ -1,0 +1,43 @@
+#!/bin/bash
+#PBS -N backtrack
+#PBS -A URIC0014
+#PBS -q main
+#PBS -l select=1:ncpus=18:mpiprocs=18
+#PBS -l walltime=06:00:00
+#PBS -j oe
+#PBS -k eod
+
+# ────────────────────────────────
+# 1. Load your virtual environment
+# ────────────────────────────────
+source $HOME/Python1/venv/bin/activate
+
+# ────────────────────────────────
+# 2. Set up environment variables
+# ────────────────────────────────
+export PATH=$HOME/backtrack_env/install/openmpi-4.1.5/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/backtrack_env/install/openmpi-4.1.5/lib:$HOME/backtrack_env/install/hdf5-1.12.1/lib:$LD_LIBRARY_PATH
+
+export HDF5_USE_FILE_LOCKING=FALSE
+export HDF5_MPI_OPT_TYPES=TRUE
+export OMPI_MCA_btl_vader_single_copy_mechanism=none
+
+# (Optional) for stability on certain file systems:
+# export OMPI_MCA_io=ompio
+# or: export OMPI_MCA_io=romio321
+
+# ────────────────────────────────
+# 3. Navigate to working directory
+# ────────────────────────────────
+cd $PBS_O_WORKDIR
+
+# ────────────────────────────────
+# 4. Run the simulation
+# ────────────────────────────────
+mpiexec -n 18 python $HOME/BT_main_RUN3/backtrack_particles.py
+
+# ────────────────────────────────
+# 5. End of job
+# ────────────────────────────────
+echo "✅ Backtrack simulation finished on $(date)"
+

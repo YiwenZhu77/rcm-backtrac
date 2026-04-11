@@ -1,0 +1,46 @@
+#!/bin/bash
+#PBS -A URIC0014
+#PBS -q casper
+#PBS -j oe
+#PBS -l walltime=24:00:00
+#PBS -l select=1:ncpus=1:mem=120GB
+
+set -euo pipefail
+cd "$PBS_O_WORKDIR"
+
+echo "SCRIPT PATH: $0"
+nl -ba "$0" | sed -n '1,200p'
+echo "PBS_O_WORKDIR=$PBS_O_WORKDIR"
+echo "PWD=$(pwd)"
+
+# TMPDIR: scratch if possible, else work
+: "${USER:=$(sinas)}"
+if [ -d "/glade/scratch/$USER" ] && [ -w "/glade/scratch/$USER" ]; then
+  export TMPDIR="/glade/scratch/$USER/temp"
+else
+  export TMPDIR="/glade/work/$USER/temp"
+fi
+mkdir -p "$TMPDIR"
+echo "TMPDIR=$TMPDIR"
+
+# Python env
+module load conda
+conda activate npl-2025a
+echo "python=$(which python)"; python -V
+
+# Absolute input/output
+INPUT="/glade/work/$USER/4_idealized_tests/RUN3/BT_out/simulation_data.h5"
+# INPUT="/glade/work/$USER/Nov2023/BT_out/simulation_data_v2.h5"
+OUTDIR="$PBS_O_WORKDIR/BT_postprocess_out"
+mkdir -p "$OUTDIR"
+
+echo "INPUT=$INPUT"
+ls -l "$INPUT" || { echo "Missing input HDF5: $INPUT"; exit 2; }
+
+# Render (no MPI)
+python Simple_test.py \
+  --render-only \
+  --input  "$INPUT" \
+  --output "$OUTDIR/particle_trajectories.mp4"
+
+echo "Done. MP4 at $OUTDIR/particle_trajectories.mp4"
