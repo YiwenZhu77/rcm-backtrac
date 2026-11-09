@@ -18,7 +18,7 @@ import tools
 
 # ============ Config ============
 N_STEPS = params.last_chunk  # 240 steps backward
-OUT_TRAJ = '/glade/derecho/scratch/yizhu/backtrac_pilot/sina_orig_1k_traj.npy'
+OUT_TRAJ = '/path/to/pilot-data/sina_orig_1k_traj.npy'
 os.makedirs(params.save_ani_file_path, exist_ok=True)
 
 # ============ Load field data ============

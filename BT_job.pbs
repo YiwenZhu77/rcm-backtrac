@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -N backtrack
-#PBS -A URIC0014
+#PBS -A YOUR_PROJECT
 #PBS -q main
 #PBS -l select=1:ncpus=18:mpiprocs=18
 #PBS -l walltime=06:00:00

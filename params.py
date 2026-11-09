@@ -34,13 +34,13 @@ R_MAX: float | None = 6.6
 MAX_LOST_PARTICLES = 2
 
 # File paths — MAGE sp13_075
-hdf5_file_path = "/glade/derecho/scratch/yizhu/backtrac_pilot/sp13_075_rcm_mage.h5"
-particle_file_path = "/glade/derecho/scratch/yizhu/backtrac_pilot/sina_1k_particles.h5"
+hdf5_file_path = "/path/to/pilot-data/sp13_075_rcm_mage.h5"
+particle_file_path = "/path/to/pilot-data/sina_1k_particles.h5"
 loss_data_path = ""
 
-save_ani_file_path = "/glade/derecho/scratch/yizhu/backtrac_pilot/sina_out/"
+save_ani_file_path = "/path/to/pilot-data/sina_out/"
 output_hdf5_path = save_ani_file_path + "simulation_data.h5"
 animation_file_path = save_ani_file_path + "particle_trajectories.mp4"
 initial_setup_path = save_ani_file_path + "particle_initialization.png"
 
-code_path = "/glade/work/yizhu/backtrac/rcm_backtrac"
+code_path = "/path/to/rcm-backtrac"

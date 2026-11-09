@@ -1,9 +1,9 @@
 #!/bin/bash
 #PBS -N AssembleHDF5
-#PBS -A URIC0014
+#PBS -A YOUR_PROJECT
 #PBS -j oe
 #PBS -k eod
-#PBS -q casper
+#PBS -q YOUR_QUEUE
 #PBS -l walltime=24:00:00
 #PBS -l select=1:ncpus=1
 
@@ -12,7 +12,7 @@
 ### temporary .npy files for each rank.
 
 # --- Setup Conda Environment ---
-source /glade/u/apps/opt/conda/etc/profile.d/conda.sh
+module load conda
 conda activate npl
 
 # --- Go to the working directory ---

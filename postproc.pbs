@@ -1,6 +1,6 @@
 #!/bin/bash
-#PBS -A URIC0014
-#PBS -q casper
+#PBS -A YOUR_PROJECT
+#PBS -q YOUR_QUEUE
 #PBS -j oe
 #PBS -l walltime=24:00:00
 #PBS -l select=1:ncpus=1:mem=120GB
@@ -14,11 +14,11 @@ echo "PBS_O_WORKDIR=$PBS_O_WORKDIR"
 echo "PWD=$(pwd)"
 
 # TMPDIR: scratch if possible, else work
-: "${USER:=$(sinas)}"
-if [ -d "/glade/scratch/$USER" ] && [ -w "/glade/scratch/$USER" ]; then
-  export TMPDIR="/glade/scratch/$USER/temp"
+: "${USER:=user}"
+if [ -d "/path/to/scratch/$USER" ] && [ -w "/path/to/scratch/$USER" ]; then
+  export TMPDIR="/path/to/scratch/$USER/temp"
 else
-  export TMPDIR="/glade/work/$USER/temp"
+  export TMPDIR="/path/to/work/$USER/temp"
 fi
 mkdir -p "$TMPDIR"
 echo "TMPDIR=$TMPDIR"
@@ -29,8 +29,7 @@ conda activate npl-2025a
 echo "python=$(which python)"; python -V
 
 # Absolute input/output
-INPUT="/glade/work/$USER/4_idealized_tests/RUN3/BT_out/simulation_data.h5"
-# INPUT="/glade/work/$USER/Nov2023/BT_out/simulation_data_v2.h5"
+INPUT="/path/to/work/$USER/4_idealized_tests/RUN3/BT_out/simulation_data.h5"
 OUTDIR="$PBS_O_WORKDIR/BT_postprocess_out"
 mkdir -p "$OUTDIR"
 
